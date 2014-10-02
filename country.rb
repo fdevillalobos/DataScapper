@@ -17,7 +17,11 @@ class Country
     self.elec_consumption = options[:elec_consumption]
     self.neighbors = options[:neighbors]
   end
-
+  
+  def c_per_capita
+    return self.elec_consumption/self.population
+  end
+  
   def to_s
     "#{self.name}"
   end

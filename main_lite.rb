@@ -130,25 +130,50 @@ def vlook_information(names, country)
     population_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_People').inner_html.match(/title="Notes and Definitions: Population".*?<span/m)
     if population_html != nil && population_html[0] =~ (/\d{0,3},*\d{0,3},*\d{0,3},*\d{3}/)
       population = population_html[0].match(/\d{0,3},*\d{0,3},*\d{0,3},*\d{3}/)[0].split(",")
-  #    if population.size > 0
-        country[ctry_name].population = case population.size
-          when 1
-            population[0].to_i
-          when 2
-            (population[0] << population[1]).to_i
-          when 3
-            (population[0] << population[1] << population[2]).to_i
-          when 4
-            (population[0] << population[1] << population[2] << population[3]).to_i
-          else
-            0
-        end
-  #    end
+      country[ctry_name].population = case population.size
+        when 1
+          population[0].to_i
+        when 2
+          (population[0] << population[1]).to_i
+        when 3
+          (population[0] << population[1] << population[2]).to_i
+        when 4
+          (population[0] << population[1] << population[2] << population[3]).to_i
+      else
+        0
+      end
     else
       country[ctry_name].population = 0
     end
     
-    puts "#{ctry_name} has #{country[ctry_name].population} inhabitants."
+    #puts "#{ctry_name} has #{country[ctry_name].population} inhabitants."
+    
+    
+    #Getting energy consumption of the country
+    e_consumption_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Energy').inner_html.match(/title="Notes and Definitions: Electricity - consumption".*?(<span)/m)
+    if e_consumption_html != nil
+      e_consumption = e_consumption_html[0].match(/\d{1,3}.\d{0,3} (billion|trillion|kWh|million)/)[0].split(" ")
+      country[ctry_name].elec_consumption = case e_consumption[1]
+        when "kWh"
+         e_consumption[0].to_i
+        when "million"
+         number = e_consumption[0].split(".")
+         number[0].to_i * 1000000 + number[1].to_i * 1000
+        when "billion"
+         number = e_consumption[0].split(".")
+         number[0].to_i * 1000000000 + number[1].to_i * 1000000
+        when "trillion"
+         number = e_consumption[0].split(".")
+         number[0].to_i * 1000000000000 + number[1].to_i * 1000000000
+      else
+        4
+      end
+    else
+      country[ctry_name].elec_consumption = 0
+    end
+    
+    puts "#{ctry_name} has a #{country[ctry_name].elec_consumption} kWh consumption."
+    
             
   end   #Of the initial names.each!!!
   puts "Finisehd!"
@@ -257,7 +282,20 @@ def question_4(names, country, options = {})
 end
 
 
-
+#Electric Consumption per Capita
+# def question_5(names, country, options = {})
+# #  @continent = options[:continent] || "Asia"
+#   @ctry_num = options[:num] || 5 
+#   
+#   names.each do |ctry_name|
+#     # Get countries in @continent that have more than @min_pp_num of political parties.
+#     if country[ctry_name].continent == @continent && country[ctry_name].p_party_num > @min_num_pp
+#       puts "#{country[ctry_name]} is in #{country[ctry_name].continent} and has #{country[ctry_name].p_party_num} political parties."
+#     end
+#   end
+#   
+#   return nil
+# end
 
 
 
