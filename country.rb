@@ -1,6 +1,6 @@
 #basic class to store movie information
 class Country 
-  attr_accessor :continent, :population, :name, :link, :low_elev, :high_elev, :latitude, :longitude, :HTML, :disaster
+  attr_accessor :continent, :population, :name, :link, :low_elev, :high_elev, :latitude, :longitude, :HTML, :disaster, :p_party_num, :elec_consumption, :neighbors
 
   def initialize(name, options)
     self.name = name
@@ -13,6 +13,9 @@ class Country
     self.longitude = options[:longitude]
     self.HTML = options[:HTML]
     self.disaster = options[:disaster]
+    self.p_party_num = options[:p_party_num]
+    self.elec_consumption = options[:elec_consumption]
+    self.neighbors = options[:neighbors]
   end
 
   def to_s
