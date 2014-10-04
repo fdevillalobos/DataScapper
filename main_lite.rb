@@ -195,7 +195,7 @@ def vlook_information(names, country)
     gdppc_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Econ').inner_html.match(/title="Notes and Definitions: GDP - per capita \(PPP\)".*?<span/m)
     if gdppc_html
       if gdppc_html[0].scan(/\$\d{0,3},*\d{1,3}/).size > 0
-        get_number = gdppc_html[0].scan(/\$\d{0,3},*\d{1,3}/)[0][1..-1].split(',') 
+        get_number = gdppc_html[0].scan(/\$\d{0,3},*\d{1,3}/)[0][1..-1].split(',')
         if get_number.size > 1
           country[ctry_name].gdp_pc = (get_number[0]<<get_number[1]).to_i
         else
@@ -342,6 +342,26 @@ def question_7(names, country, options = {})
   nil
 end
 
+# Find best sum of GDP per capita in continents
+def question_8(names, country, options = {})
+  @continent = options[:continent]  || ['South America', 'North America', 'Europe', 'Asia', 'Africa', 'Oceania']
+  continent_gdp = Array.new(@continent.size, 0)
+  continent_popu = Array.new(@continent.size, 0)
+  c_gdp_per_c = Array.new(@continent.size, 0)
+
+  @continent.each_with_index do |continent, index|
+    names.each do |ctry_name|
+      if country[ctry_name].continent == continent
+        continent_gdp[index] += country[ctry_name].gdp_pc * country[ctry_name].population
+        continent_popu[index] += country[ctry_name].population if country[ctry_name].continent == continent
+      end
+    end
+    c_gdp_per_c[index] = continent_gdp[index].to_f / continent_popu[index]
+    puts "#{continent} has a accumulated GDP per capita of: $#{c_gdp_per_c[index]}"
+  end
+  puts "#{@continent[c_gdp_per_c.index(c_gdp_per_c.max)]} has the greatest accumulated GDP per capita, with: $#{'%.02f' % c_gdp_per_c.max}"
+  nil
+end
 # ############################################ EXECUTING CODE ######################################################
 
 # names, country = initial_Load
