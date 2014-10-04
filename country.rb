@@ -1,6 +1,12 @@
-#basic class to store movie information
-class Country 
-  attr_accessor :name, :continent, :population, :link, :low_elev, :high_elev, :latitude, :longitude, :HTML, :disaster, :p_party_num, :elec_consumption, :neighbors, :r_percentage, :landlocked
+# Basic class to store movie information
+# Instance variable with only one @
+# Class variable with two @@
+# Local variables
+
+class Country
+  attr_accessor :name, :continent, :population, :link, :low_elev, :high_elev,
+                :latitude, :longitude, :HTML, :disaster, :p_party_num,
+                :elec_consumption, :neighbors, :r_percentage, :landlocked
 
   def initialize(name, options)
     self.name = name
@@ -19,24 +25,16 @@ class Country
     self.r_percentage = options[:r_percentage]
     self.landlocked = options[:landlocked]
   end
-  
+
   def c_per_capita
     if population > 0
-      return elec_consumption.to_f/population
+      return elec_consumption.to_f / population
     else
       0
     end
   end
-  
+
   def to_s
-    "#{self.name}"
+    "#{name}"
   end
-
 end
-
-
-
-# Instance variable with only one @
-# Class variable with two @@
-# Local variables
-
