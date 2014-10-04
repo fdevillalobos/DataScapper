@@ -6,12 +6,13 @@
 class Country
   attr_accessor :name, :continent, :population, :link, :low_elev, :high_elev,
                 :latitude, :longitude, :HTML, :disaster, :p_party_num,
-                :elec_consumption, :neighbors, :r_percentage, :landlocked
+                :elec_consumption, :neighbors, :r_percentage, :landlocked, :gdp_pc
 
   def initialize(name, options)
     self.name = name
     self.continent = options[:continent]
     self.population = options[:population]
+    self.gdp_pc = options[:gdp_pc]
     self.link = "https://www.cia.gov/library/publications/the-world-factbook/#{options[:link][0]}"
     self.low_elev = options[:low_elev]
     self.high_elev = options[:high_elev]

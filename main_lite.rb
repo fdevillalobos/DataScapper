@@ -169,15 +169,12 @@ def vlook_information(names, country)
     end
 
     # Getting landlocked countries and neighbors
+    country[ctry_name].landlocked = 0
     maritime_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Geo').inner_html.match(/title="Notes and Definitions: Coastline".*?(title="Notes and Definitions: Maritime claims"|landlocked)/m)
     if maritime_html
       if maritime_html[0] =~ (/landlocked/)
         country[ctry_name].landlocked = 1
-      else
-        country[ctry_name].landlocked = 0
       end
-    else
-      country[ctry_name].landlocked = 0
     end
 
     # Number of neighbors
@@ -191,6 +188,20 @@ def vlook_information(names, country)
       end
     else
       country[ctry_name].neighbors = 0
+    end
+
+    # GPD per capita
+          country[ctry_name].gdp_pc = 0
+    gdppc_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Econ').inner_html.match(/title="Notes and Definitions: GDP - per capita \(PPP\)".*?<span/m)
+    if gdppc_html
+      if gdppc_html[0].scan(/\$\d{0,3},*\d{1,3}/).size > 0
+        get_number = gdppc_html[0].scan(/\$\d{0,3},*\d{1,3}/)[0][1..-1].split(',') 
+        if get_number.size > 1
+          country[ctry_name].gdp_pc = (get_number[0]<<get_number[1]).to_i
+        else
+          country[ctry_name].gdp_pc = get_number[0].to_i
+        end
+      end
     end
 
   end   # Of the initial names.each!!!
