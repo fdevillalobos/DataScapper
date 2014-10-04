@@ -8,19 +8,19 @@ require './country'
 # Loads all the HTML code and country list.
 # Creates each country and associates it with a link and an HTML file.
 def initial_load
-  country = {}      # Hash instead of [] array.
-  names = []
-  page = 'https://www.cia.gov/library/publications/the-world-factbook/print/textversion.html'
+  country = {}                                                                                                          # Initialize Hash instead of [] array.
+  names = []                                                                                                            # Initialize list of country names.
+  page = 'https://www.cia.gov/library/publications/the-world-factbook/print/textversion.html'                           # Website we want to access.
   index_page = Nokogiri::HTML(open(page))
-  countries_html = index_page.css('div#demo li a')
+  countries_html = index_page.css('div#demo li a')                                                                      # Retrieve the part where all the countries are listed.
 
   puts 'Getting information for the CIA. Please wait a moment...'
   countries_html.each_with_index do |link, index|
-    comp_link = link.values[0]
-    country_html = "https://www.cia.gov/library/publications/the-world-factbook/#{comp_link[3..-1]}"
-    country[link.text.strip] = Country.new(link.text.strip, link: link.values,
+    comp_link = link.values[0]                                                                                          # Get complementary part of the link to access specific country.
+    country_html = "https://www.cia.gov/library/publications/the-world-factbook/#{comp_link[3..-1]}"                    # Build country HTML.
+    country[link.text.strip] = Country.new(link.text.strip, link: link.values,                                          # Add country key to hash, with some initialized parameters.
                                                             HTML: Nokogiri::HTML(open(country_html)))
-    names[index] = link.text.strip
+    names[index] = link.text.strip                                                                                      # Add country name to the name list.
   end
   puts 'Finished Loading all Countries!'
   return names, country
@@ -34,8 +34,8 @@ def vlook_information(names, country)
     # Get country coordinates
     if country[ctry_name].HTML.css('div#CollapsiblePanel1_Geo td#data div.category_data')[1]
       coordinates = country[ctry_name].HTML.css('div#CollapsiblePanel1_Geo td#data div.category_data')[1].text
-      country[ctry_name].longitude = coordinates.match(/\d{1,3} \d{2} (N|S)/)[0] if coordinates.match(/\d{1,3} \d{2} (N|S)/)
-      country[ctry_name].latitude  = coordinates.match(/\d{1,3} \d{2} (W|E)/)[0] if coordinates.match(/\d{1,3} \d{2} (W|E)/)
+      country[ctry_name].longitude = coordinates[/\d{1,3} \d{2} (N|S)/, 0] if coordinates[/\d{1,3} \d{2} (N|S)/, 0]
+      country[ctry_name].latitude  = coordinates[/\d{1,3} \d{2} (W|E)/, 0] if coordinates[/\d{1,3} \d{2} (W|E)/, 0]
     end
 
     # Get continent of the country
@@ -52,70 +52,59 @@ def vlook_information(names, country)
     end
     country['World'].continent = ' '
 
-    # Check for Earthquakes.
-    # To make it fancier we have to create and array of disasters and the check for all of them in the question answer.
-    if country[ctry_name].HTML.css('div#CollapsiblePanel1_Geo td#data div.category_data').text =~ /earthquake/
-      country[ctry_name].disaster = 'earthquakes'
-    end
-
     # Retrieve Elevation Info - Lowest Point
     elevations = country[ctry_name].HTML.css('div#CollapsiblePanel1_Geo td#data div.category')
     if elevations.text =~ (/lowest point:.*\d{1,2},\d{1,3} m|lowest point:.*\d{1,3} m/)
-      low_e = elevations.text.match(/lowest point:.*\d{1,2},\d{1,3} m|lowest point:.*\d{1,3} m/)[0].match(/-*\d{1,2},\d{1,3}|-*\d{1,3}/)[0]
+      low_e = elevations.text[/lowest point:.*\d{1,2},\d{1,3} m|lowest point:.*\d{1,3} m/, 0][/-*\d{1,2},\d{1,3}|-*\d{1,3}/, 0]       # This notation replaces .match and never gives and error, just nil.
       low_e = low_e.split(',')
       country[ctry_name].low_elev = case low_e.size
-        when 1
-          low_e[0].to_i
-        when 2
-          if low_e[0].to_i < 0
-            low_e[0].to_i * 1000 - low_e[1].to_i
-          else
-            low_e[0].to_i * 1000 + low_e[1].to_i
-          end
+      when 1
+        low_e[0].to_i
+      when 2
+        if low_e[0].to_i < 0
+          low_e[0].to_i * 1000 - low_e[1].to_i
         else
-          'Incorrect Size'
+          low_e[0].to_i * 1000 + low_e[1].to_i
+        end
       end
     end
 
     # Retrieve Elevation Info - Highest Point
     if elevations.text =~ (/highest point:\n*\t*\n*\t*.*\d{1,2},\d{1,3} m|highest point:\n*\t*\n*\t*.*\d{1,3} m/)
-      high_e = elevations.text.match(/highest point:\n*\t*\n*\t*.*\d{1,2},\d{1,3} m|highest point:\n*\t*\n*\t*.*\d{1,3} m/)[0].match(/-*\d{1,2},\d{1,3}|-*\d{1,3}/)[0]
+      high_e = elevations.text[/highest point:\n*\t*\n*\t*.*\d{1,2},\d{1,3} m|highest point:\n*\t*\n*\t*.*\d{1,3} m/, 0][/-*\d{1,2},\d{1,3}|-*\d{1,3}/, 0]
       high_e = high_e.split(',')
       country[ctry_name].high_elev = case high_e.size
-        when 1
-          high_e[0].to_i
-        when 2
-          if high_e[0].to_i < 0
-            high_e[0].to_i * 1000 - high_e[1].to_i
-          else
-            high_e[0].to_i * 1000 + high_e[1].to_i
-          end
-      else
-        'Incorrect Size'
+      when 1
+        high_e[0].to_i
+      when 2
+        if high_e[0].to_i < 0
+          high_e[0].to_i * 1000 - high_e[1].to_i
+        else
+          high_e[0].to_i * 1000 + high_e[1].to_i
+        end
       end
     end
 
-    # Search For Political Parties - NON-GREEDY -->  REVIEW THIS PART AGAIN
+    # Search For Political Parties - NON-GREEDY
     count = 0
-    political_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Govt').inner_html.match(/title="Notes and Definitions: Political parties and leaders".*?(<tr class=\"mde_light\>"|note:)/m)
+    political_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Govt').inner_html[/title="Notes and Definitions: Political parties and leaders".*?(<tr class=\"mde_light\>"|note:|Political pressure groups)/m, 0]
     if political_html
-      parties_html = political_html[0].scan(/category_data.*?div>/)
+      parties_html = political_html.scan(/category_data.*?div>/)
       count += parties_html.size
-#       parties_html.each do |str|
-#         if str =~ /\d{1,3} political parties/
-#           count =+ str.match(/\d{1,3}/)[0].to_i - 1
-#         end
-#       end
-      if political_html[0] =~ /note:/ && count > 0
+       parties_html.each do |str|
+         count += str[/\d{1,3}/, 0].to_i - 1 if str =~ /\d{1,3} political parties/
+       end
+      if political_html =~ /note:/ && count > 0
         count -= 1
       end
     end
     country[ctry_name].p_party_num = count
+    #puts "#{country[ctry_name].name} has #{country[ctry_name].p_party_num} political parties"
 
     # Get the population of the country
-    population_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_People').inner_html.match(/title="Notes and Definitions: Population".*?<span/m)
-    if population_html && population_html[0] =~ (/\d{0,3},*\d{0,3},*\d{0,3},*\d{3}/)
-      population = population_html[0].match(/\d{0,3},*\d{0,3},*\d{0,3},*\d{3}/)[0].split(',')
+    population_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_People').inner_html[/title="Notes and Definitions: Population".*?<span/m, 0]
+    if population_html && population_html =~ (/\d{0,3},*\d{0,3},*\d{0,3},*\d{3}/)
+      population = population_html[/\d{0,3},*\d{0,3},*\d{0,3},*\d{3}/, 0].split(',')
       country[ctry_name].population = case population.size
         when 1
           population[0].to_i
@@ -133,9 +122,9 @@ def vlook_information(names, country)
     end
 
     # Getting energy consumption of the country
-    e_consumption_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Energy').inner_html.match(/title="Notes and Definitions: Electricity - consumption".*?(<span)/m)
+    e_consumption_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Energy').inner_html[/title="Notes and Definitions: Electricity - consumption".*?(<span)/m, 0]
     if e_consumption_html
-      e_consumption = e_consumption_html[0].match(/\d{1,3}.\d{0,3} (billion|trillion|kWh|million)/)[0].split(' ')
+      e_consumption = e_consumption_html[/\d{1,3}.\d{0,3} (billion|trillion|kWh|million)/, 0].split(' ')
       country[ctry_name].elec_consumption = case e_consumption[1]
         when 'kWh'
           e_consumption[0].to_i
@@ -156,10 +145,10 @@ def vlook_information(names, country)
     end
 
     # Getting dominant religion of the country
-    religion_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_People').inner_html.match(/title="Notes and Definitions: Religions".*?(title="Notes and Definitions: Population"|,)/m)
+    religion_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_People').inner_html[/title="Notes and Definitions: Religions".*?(title="Notes and Definitions: Population"|,)/m, 0]
     if religion_html
-      if religion_html[0] =~ (/\d{1,2}\.{0,1}\d{0,2}%/)
-        country[ctry_name].r_percentage = religion_html[0].match(/\d{1,2}\.{0,1}\d{0,2}%/)[0][0..-2].to_f
+      if religion_html =~ (/\d{1,2}\.{0,1}\d{0,2}%/)
+        country[ctry_name].r_percentage = religion_html[/\d{1,2}\.{0,1}\d{0,2}%/, 0][0..-2].to_f
       else
         # religion = religion_html[0].match(/Roman Catholic|Daoist|Muslim|Lutheran|Protestant|Buddhist|Anglican|animist|Christian/)[0]
         country[ctry_name].r_percentage = 100
@@ -170,37 +159,31 @@ def vlook_information(names, country)
 
     # Getting landlocked countries and neighbors
     country[ctry_name].landlocked = 0
-    maritime_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Geo').inner_html.match(/title="Notes and Definitions: Coastline".*?(title="Notes and Definitions: Maritime claims"|landlocked)/m)
+    maritime_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Geo').inner_html[/title="Notes and Definitions: Coastline".*?(title="Notes and Definitions: Maritime claims"|landlocked)/m, 0]
     if maritime_html
-      if maritime_html[0] =~ (/landlocked/)
-        country[ctry_name].landlocked = 1
-      end
+      country[ctry_name].landlocked = 1 if maritime_html =~ (/landlocked/)
     end
 
     # Number of neighbors
-    neighbors_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Geo').inner_html.match(/title="Notes and Definitions: Land boundaries".*?title="Notes and Definitions: Coastline"/m)
+    neighbors_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Geo').inner_html[/title="Notes and Definitions: Land boundaries".*?title="Notes and Definitions: Coastline"/m, 0]
     if neighbors_html
-      neighbors_html = neighbors_html[0].match(/border countries:.*div>/m)
-      if neighbors_html
-        country[ctry_name].neighbors = neighbors_html[0].scan(/\d{0,3},*\d{1,3} km/).size
-      else
-        country[ctry_name].neighbors = 0
-      end
+      neighbors_html = neighbors_html[/border countries:.*div>/m, 0]
+      neighbors_html ?
+          country[ctry_name].neighbors = neighbors_html.scan(/\d{0,3},*\d{1,3} km/).size :
+          country[ctry_name].neighbors = 0
     else
       country[ctry_name].neighbors = 0
     end
 
     # GPD per capita
           country[ctry_name].gdp_pc = 0
-    gdppc_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Econ').inner_html.match(/title="Notes and Definitions: GDP - per capita \(PPP\)".*?<span/m)
+    gdppc_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Econ').inner_html[/title="Notes and Definitions: GDP - per capita \(PPP\)".*?<span/m, 0]
     if gdppc_html
-      if gdppc_html[0].scan(/\$\d{0,3},*\d{1,3}/).size > 0
-        get_number = gdppc_html[0].scan(/\$\d{0,3},*\d{1,3}/)[0][1..-1].split(',')
-        if get_number.size > 1
-          country[ctry_name].gdp_pc = (get_number[0]<<get_number[1]).to_i
-        else
-          country[ctry_name].gdp_pc = get_number[0].to_i
-        end
+      if gdppc_html.scan(/\$\d{0,3},*\d{1,3}/).size > 0
+        get_number = gdppc_html.scan(/\$\d{0,3},*\d{1,3}/)[0][1..-1].split(',')
+        (get_number.size > 1) ?
+            country[ctry_name].gdp_pc = (get_number[0]<<get_number[1]).to_i :                                           # Operation if TRUE
+            country[ctry_name].gdp_pc = get_number[0].to_i                                                              # Operation if FALSE
       end
     end
 
@@ -216,22 +199,14 @@ def question_1(names, country, options = {})
   @continent = options[:continent] || ['South America']
   @disaster  = options[:disaster]  || ['earthquake']
 
+  puts ''
+  puts 'Question 1: Countries in @continent with risk of @disaster'
   @continent.each do |continent|
     puts ''
     @disaster.each do |disaster|
-      names.each do |ctry_name|
-        # Check for Earthquakes.
-        # To make it fancier we have to create and array of disasters and the check for all of them in the question answer.
-        if country[ctry_name].HTML.css('div#CollapsiblePanel1_Geo td#data div.category_data').text =~ /#{disaster}/
-          confirm = 1
-        else
-          cofirm = 0
-        end
-        # Get countries in @continent that have earthquakes.
-        if country[ctry_name].continent == continent && confirm == 1
-          puts "#{ctry_name} is in #{country[ctry_name].continent} and it's prone to #{disaster}s"
-        end
-      end
+    ctries_continent = country.select { |ctry, hash| hash.continent == continent }
+    ctries_disaster  = ctries_continent.select { |ctry, hash| hash.HTML.css('div#CollapsiblePanel1_Geo td#data div.category_data').text =~ /#{disaster}/ }
+    ctries_disaster.map { |ctry, hash| puts "#{hash.name} is in #{hash.continent} and it's prone to #{disaster}s"}
     end
   end
   nil
@@ -243,6 +218,8 @@ def question_2(names, country, options = {})
   @limit  = options[:limit]  || 0     # 0 For lowest point. 1 for highest point.
   ctry_index = 0
 
+  puts ''
+  puts 'Question 2: Country in @continent with the highest/lowest elevation point'
   # Look for the highest elevation point in @continent
   if @limit == 1
     max = 0
@@ -274,6 +251,7 @@ def question_3(names, country, options = {})
   @longitude  = options[:longitude]  || 'S'
   @latitude   = options[:latitude]   || 'E'
 
+  puts ''
   puts "The countries that are in the #{@longitude}#{@latitude} hemisphere are:"
   names.each do |ctry_name|
     if country[ctry_name].longitude =~ /#{@longitude}/ && country[ctry_name].latitude =~ /#{@latitude}/
@@ -288,6 +266,8 @@ def question_4(names, country, options = {})
   @continent = options[:continent] || 'Asia'
   @min_num_pp = options[:min] || 10
 
+  puts ''
+  puts 'Question 4: Country in @continent with more than @min_num_pp political parties'
   names.each do |ctry_name|
     # Get countries in @continent that have more than @min_pp_num of political parties.
     if country[ctry_name].continent == @continent && country[ctry_name].p_party_num > @min_num_pp
@@ -303,19 +283,23 @@ def question_5(country, options = {})
   @ctry_num = options[:num] || 5
   num_array = *(0..@ctry_num - 1)
 
+  puts ''
+  puts 'Question 5: Top @ctry_num countries in @continent with the greatest electric consumption per capita'
   ctry_list = country.sort_by { |ctry, hash| hash.c_per_capita }.last(@ctry_num).reverse
   num_array.each do |x|
-    puts "#{ctry_list[x][1].name} has the #{x + 1} electric consumption per capita with #{'%.02f' % ctry_list[x][1].c_per_capita} kWh/inhabitant"
+    puts "#{ctry_list[x][1].name} has the #{x + 1} electric consumption per capita with #{'%.2f' % ctry_list[x][1].c_per_capita} kWh/inhabitant"
   end
   nil
 end
 # #### COULD USE THIS country.sort_by{|ctry| ctry[1].c_per_capita}.last(@number)
 
-# Political Parties
+# Predominant Religion
 def question_6(names, country, options = {})
   @l_limit = options[:low]  || 50
   @h_limit = options[:high] || 80
 
+  puts ''
+  puts 'Question 6: Countries with predominant religion > @h_limit % or < @l_limit %'
   names.each do |ctry_name|
     if country[ctry_name].r_percentage > @h_limit
       puts "#{country[ctry_name]} has a predominant religion, with #{country[ctry_name].r_percentage} % of the poputation."
@@ -334,6 +318,8 @@ end
 def question_7(names, country, options = {})
   @neighbors = options[:neighbors]  || 1
 
+  puts ''
+  puts 'Question 7: Landlocked countries with a maximum of @neighbors neighbors'
   names.each do |ctry_name|
     if country[ctry_name].landlocked == 1 && country[ctry_name].neighbors <= @neighbors
       puts "#{country[ctry_name]} is a landlocked country, with only #{country[ctry_name].neighbors} neighbors."
@@ -342,13 +328,15 @@ def question_7(names, country, options = {})
   nil
 end
 
-# Find best sum of GDP per capita in continents
+# Find best sum of GDP per capita in continents. WILDCARD.
 def question_8(names, country, options = {})
   @continent = options[:continent]  || ['South America', 'North America', 'Europe', 'Asia', 'Africa', 'Oceania']
   continent_gdp = Array.new(@continent.size, 0)
   continent_popu = Array.new(@continent.size, 0)
   c_gdp_per_c = Array.new(@continent.size, 0)
 
+  puts ''
+  puts 'Question 8: Continent in @continent with the greatest GDP per capita'
   @continent.each_with_index do |continent, index|
     names.each do |ctry_name|
       if country[ctry_name].continent == continent
@@ -357,12 +345,21 @@ def question_8(names, country, options = {})
       end
     end
     c_gdp_per_c[index] = continent_gdp[index].to_f / continent_popu[index]
-    puts "#{continent} has a accumulated GDP per capita of: $#{c_gdp_per_c[index]}"
+    #puts "#{continent} has a accumulated GDP per capita of: $#{c_gdp_per_c[index]}"
   end
-  puts "#{@continent[c_gdp_per_c.index(c_gdp_per_c.max)]} has the greatest accumulated GDP per capita, with: $#{'%.02f' % c_gdp_per_c.max}"
+  puts "#{@continent[c_gdp_per_c.index(c_gdp_per_c.max)]} has the greatest accumulated GDP per capita, with: $#{'%.2f' % c_gdp_per_c.max}"
   nil
 end
 # ############################################ EXECUTING CODE ######################################################
 
-# names, country = initial_Load
-# country = vlook_continent(names, country)
+#names, country = initial_load
+#country = vlook_information(names, country)
+#
+#question_1(names, country)
+#question_2(names, country)
+#question_3(names, country)
+#question_4(names, country)
+#question_5(country)
+#question_6(names, country)
+#question_7(names, country)
+#question_8(names, country)
