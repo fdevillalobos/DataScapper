@@ -1,0 +1,8 @@
+Charlie: Snoopy, Linus, Lucy, Patty.
+Snoopy: Linus, Sally.
+Linus: Lucy, Pigpen, Schroeder.
+Lucy: Linus, Sally.
+Patty: Marcie.
+Sally: Snoopy, Linus, Schroeder.
+Woodstock: Snoopy.
+Schroeder: Sally, Charlie.

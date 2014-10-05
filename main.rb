@@ -51,6 +51,8 @@ def vlook_information(names, country)
         country[ctry_name].continent
     end
     country['World'].continent = ' '
+    country['European Union'].continent = ' '
+    # France was the only country that has weird things, so I overwrote it here. Continent will never change.
     country['France'].continent = 'Europe'
 
     # Retrieve Elevation Info - Lowest Point
@@ -226,7 +228,7 @@ def question_2(country, options = {})
   puts "Question 2: Country/ies in #{@continent} with the #{'highest' if @limit == 1}#{'lowest' if @limit == 0} elevation point"
 
   # Look for the highest elevation point in @continent
-  ctries_continent = country.select { |ctry, hash| hash.continent == @continent && hash.name != 'European Union'}
+  ctries_continent = country.select { |ctry, hash| hash.continent == @continent}
   if @limit == 1
     high_ctry = ctries_continent.sort_by { |ctry, hash| hash.high_elev }.last(@number).reverse
     high_ctry.map { |ctry, hash| pos += 1; puts "The country is #{hash.continent} that has the ##{pos} highest point is #{hash.name}. It's highest elevation is of #{hash.high_elev} m" }
@@ -264,13 +266,12 @@ end
 
 # Electric Consumption per Capita
 def question_5(country, options = {})
-  # @continent = options[:continent] || 'Asia'
-  @ctry_num = options[:num] || 5
+  @num = options[:num] || 5
   pos = 0
 
   puts ''
-  puts "Question 5: Top #{@ctry_num} countries in #{@continent} with the greatest electric consumption per capita"
-  ctry_list = country.sort_by { |ctry, hash| hash.c_per_capita }.last(@ctry_num).reverse
+  puts "Question 5: Top #{@num} countries in with the greatest electric consumption per capita"
+  ctry_list = country.sort_by { |ctry, hash| hash.c_per_capita }.last(@num).reverse
   ctry_list.map { |ctry, hash| pos += 1; puts "#{hash.name} has the #{pos} electric consumption per capita with #{'%.2f' % hash.c_per_capita} kWh/inhabitant" }
   nil
 end
@@ -322,14 +323,14 @@ def question_8(country, options = {})
 end
 # ############################################ EXECUTING CODE ######################################################
 
-#names, country = initial_load
-#country = vlook_information(names, country)
-#
-#question_1(names, country)
-#question_2(names, country)
-#question_3(names, country)
-#question_4(names, country)
-#question_5(country)
-#question_6(names, country)
-#question_7(names, country)
-#question_8(names, country)
+names, country = initial_load
+country = vlook_information(names, country)
+
+question_1(country)
+question_2(country)
+question_3(country)
+question_4(country)
+question_5(country)
+question_6(country)
+question_7(country)
+question_8(country)
