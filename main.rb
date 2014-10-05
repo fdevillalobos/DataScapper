@@ -51,8 +51,10 @@ def vlook_information(names, country)
         country[ctry_name].continent
     end
     country['World'].continent = ' '
+    country['France'].continent = 'Europe'
 
     # Retrieve Elevation Info - Lowest Point
+    country[ctry_name].low_elev = 0
     elevations = country[ctry_name].HTML.css('div#CollapsiblePanel1_Geo td#data div.category')
     if elevations.text =~ (/lowest point:.*\d{1,2},\d{1,3} m|lowest point:.*\d{1,3} m/)
       low_e = elevations.text[/lowest point:.*\d{1,2},\d{1,3} m|lowest point:.*\d{1,3} m/, 0][/-*\d{1,2},\d{1,3}|-*\d{1,3}/, 0]       # This notation replaces .match and never gives and error, just nil.
@@ -70,6 +72,7 @@ def vlook_information(names, country)
     end
 
     # Retrieve Elevation Info - Highest Point
+    country[ctry_name].high_elev = 0
     if elevations.text =~ (/highest point:\n*\t*\n*\t*.*\d{1,2},\d{1,3} m|highest point:\n*\t*\n*\t*.*\d{1,3} m/)
       high_e = elevations.text[/highest point:\n*\t*\n*\t*.*\d{1,2},\d{1,3} m|highest point:\n*\t*\n*\t*.*\d{1,3} m/, 0][/-*\d{1,2},\d{1,3}|-*\d{1,3}/, 0]
       high_e = high_e.split(',')
@@ -195,12 +198,12 @@ end
 # ############################################### Question Answers ######################################################
 # #######################################################################################################################
 # Countries with disasters in Continents.
-def question_1(names, country, options = {})
+def question_1(country, options = {})
   @continent = options[:continent] || ['South America']
   @disaster  = options[:disaster]  || ['earthquake']
 
   puts ''
-  puts 'Question 1: Countries in @continent with risk of @disaster'
+  puts "Question 1: Countries in #{@continent} with risk of #{@disaster}"
   @continent.each do |continent|
     puts ''
     @disaster.each do |disaster|
@@ -213,67 +216,49 @@ def question_1(names, country, options = {})
 end
 
 # Elevation Comparisson in Continent
-def question_2(names, country, options = {})
+def question_2(country, options = {})
   @continent = options[:continent] || 'Europe'
-  @limit  = options[:limit]  || 0     # 0 For lowest point. 1 for highest point.
-  ctry_index = 0
+  @limit  = options[:limit]  || 0      # 0 For lowest point. 1 for highest point.
+  @number = options[:number] || 2     # Get more than one peak
+  pos = 0
 
   puts ''
-  puts 'Question 2: Country in @continent with the highest/lowest elevation point'
-  # Look for the highest elevation point in @continent
-  if @limit == 1
-    max = 0
-    names.each_with_index do |ctry_name, index|
-      if country[ctry_name].continent == @continent && country[ctry_name].high_elev && country[ctry_name].high_elev > max
-        max = country[ctry_name].high_elev
-        ctry_index = index
-      end
-    end
-    puts "The country in #@continent that has the highest elevation is #{country[names[ctry_index]]}. It's highest elevation is of #{country[names[ctry_index]].high_elev} m"
+  puts "Question 2: Country/ies in #{@continent} with the #{'highest' if @limit == 1}#{'lowest' if @limit == 0} elevation point"
 
+  # Look for the highest elevation point in @continent
+  ctries_continent = country.select { |ctry, hash| hash.continent == @continent && hash.name != 'European Union'}
+  if @limit == 1
+    high_ctry = ctries_continent.sort_by { |ctry, hash| hash.high_elev }.last(@number).reverse
+    high_ctry.map { |ctry, hash| pos += 1; puts "The country is #{hash.continent} that has the ##{pos} highest point is #{hash.name}. It's highest elevation is of #{hash.high_elev} m" }
   # Look for the lowest elevation point in @continent.
   else
-    min = 20_000
-    names.each_with_index do |ctry_name, index|
-      # Get countries in @continent that have the lowest elevation point.
-      if country[ctry_name].continent == @continent && country[ctry_name].low_elev && country[ctry_name].low_elev < min
-        min = country[ctry_name].low_elev
-        ctry_index = index
-      end
-    end
-    puts "The country in #{@continent} that has the lowest elevation is #{country[names[ctry_index]]}. It's lowest elevation is of #{country[names[ctry_index]].low_elev} m"
+    low_ctry = ctries_continent.sort_by { |ctry, hash| hash.low_elev }.first(@number)
+    low_ctry.map { |ctry, hash| pos += 1; puts "The country is #{hash.continent} that has the ##{pos} lowest point is #{hash.name}. It's lowest elevation is of #{hash.low_elev} m" }
   end
   nil
 end
 
 # Hemisfere Queadrant Belonging
-def question_3(names, country, options = {})
+def question_3(country, options = {})
   @longitude  = options[:longitude]  || 'S'
   @latitude   = options[:latitude]   || 'E'
 
   puts ''
   puts "The countries that are in the #{@longitude}#{@latitude} hemisphere are:"
-  names.each do |ctry_name|
-    if country[ctry_name].longitude =~ /#{@longitude}/ && country[ctry_name].latitude =~ /#{@latitude}/
-      puts country[ctry_name].name
-    end
-  end
+  ctry_hemis = country.select { |_, hash| hash.longitude =~ /#{@longitude}/ && hash.latitude =~ /#{@latitude}/}
+  ctry_hemis.map { |_, hash| puts hash }
   nil
 end
 
 # Political Parties
-def question_4(names, country, options = {})
+def question_4(country, options = {})
   @continent = options[:continent] || 'Asia'
   @min_num_pp = options[:min] || 10
 
   puts ''
-  puts 'Question 4: Country in @continent with more than @min_num_pp political parties'
-  names.each do |ctry_name|
-    # Get countries in @continent that have more than @min_pp_num of political parties.
-    if country[ctry_name].continent == @continent && country[ctry_name].p_party_num > @min_num_pp
-      puts "#{country[ctry_name]} is in #{country[ctry_name].continent} and has #{country[ctry_name].p_party_num} political parties."
-    end
-  end
+  puts "Question 4: Country in #{@continent} with more than #{@min_num_pp} political parties"
+  ctry_parties = country.select { |_, hash| hash.continent == @continent && hash.p_party_num > @min_num_pp}
+  ctry_parties.map { |_, hash| puts "#{hash.name} is in #{hash.continent} and has #{hash.p_party_num} political parties." }
   nil
 end
 
@@ -281,69 +266,54 @@ end
 def question_5(country, options = {})
   # @continent = options[:continent] || 'Asia'
   @ctry_num = options[:num] || 5
-  num_array = *(0..@ctry_num - 1)
+  pos = 0
 
   puts ''
-  puts 'Question 5: Top @ctry_num countries in @continent with the greatest electric consumption per capita'
+  puts "Question 5: Top #{@ctry_num} countries in #{@continent} with the greatest electric consumption per capita"
   ctry_list = country.sort_by { |ctry, hash| hash.c_per_capita }.last(@ctry_num).reverse
-  num_array.each do |x|
-    puts "#{ctry_list[x][1].name} has the #{x + 1} electric consumption per capita with #{'%.2f' % ctry_list[x][1].c_per_capita} kWh/inhabitant"
-  end
+  ctry_list.map { |ctry, hash| pos += 1; puts "#{hash.name} has the #{pos} electric consumption per capita with #{'%.2f' % hash.c_per_capita} kWh/inhabitant" }
   nil
 end
 # #### COULD USE THIS country.sort_by{|ctry| ctry[1].c_per_capita}.last(@number)
 
 # Predominant Religion
-def question_6(names, country, options = {})
+def question_6(country, options = {})
   @l_limit = options[:low]  || 50
   @h_limit = options[:high] || 80
 
   puts ''
-  puts 'Question 6: Countries with predominant religion > @h_limit % or < @l_limit %'
-  names.each do |ctry_name|
-    if country[ctry_name].r_percentage > @h_limit
-      puts "#{country[ctry_name]} has a predominant religion, with #{country[ctry_name].r_percentage} % of the poputation."
-    end
-  end
-  puts ''
-  names.each do |ctry_name|
-    if country[ctry_name].r_percentage < @l_limit
-      puts "#{country[ctry_name]} has a predominant religion, with #{country[ctry_name].r_percentage} % of the poputation."
-    end
-  end
+  puts "Question 6: Countries with predominant religion > #{@h_limit} % or < #{@l_limit} %"
+  high_per = country.select { |_, hash| hash.r_percentage > @h_limit }
+  high_per.map { |_, hash| puts "#{hash} has a predominant religion, with #{hash.r_percentage} % of the poputation." }
+  low_per = country.select { |_, hash| hash.r_percentage < @l_limit }
+  low_per.map { |_, hash| puts "#{hash} has a predominant religion, with #{hash.r_percentage} % of the poputation." }
   nil
 end
 
 # Landlocked countries with X or less neighbors
-def question_7(names, country, options = {})
+def question_7(country, options = {})
   @neighbors = options[:neighbors]  || 1
 
   puts ''
-  puts 'Question 7: Landlocked countries with a maximum of @neighbors neighbors'
-  names.each do |ctry_name|
-    if country[ctry_name].landlocked == 1 && country[ctry_name].neighbors <= @neighbors
-      puts "#{country[ctry_name]} is a landlocked country, with only #{country[ctry_name].neighbors} neighbors."
-    end
-  end
+  puts "Question 7: Landlocked countries with a maximum of #{@neighbors} neighbor#{'s' if @neighbors > 1}"
+  ctry_locked = country.select { |_, hash| hash.landlocked == 1 && hash.neighbors <= @neighbors}
+  ctry_locked.map { |_, hash| puts "#{hash} is a landlocked country, with only #{hash.neighbors} neighbors." }
   nil
 end
 
 # Find best sum of GDP per capita in continents. WILDCARD.
-def question_8(names, country, options = {})
-  @continent = options[:continent]  || ['South America', 'North America', 'Europe', 'Asia', 'Africa', 'Oceania']
+def question_8(country, options = {})
+  @continent = options[:continent]  || ['South America', 'Central America', 'North America', 'Europe', 'Asia', 'Africa', 'Oceania']
   continent_gdp = Array.new(@continent.size, 0)
   continent_popu = Array.new(@continent.size, 0)
   c_gdp_per_c = Array.new(@continent.size, 0)
 
   puts ''
-  puts 'Question 8: Continent in @continent with the greatest GDP per capita'
+  puts "Question 8: Continent in #{@continent} with the greatest GDP per capita"
   @continent.each_with_index do |continent, index|
-    names.each do |ctry_name|
-      if country[ctry_name].continent == continent
-        continent_gdp[index] += country[ctry_name].gdp_pc * country[ctry_name].population
-        continent_popu[index] += country[ctry_name].population if country[ctry_name].continent == continent
-      end
-    end
+    ctry_continent = country.select { |_, hash| hash.continent == continent }
+    ctry_continent.map { |_, hash| continent_gdp[index] += hash.gdp_pc * hash.population;
+                                   continent_popu[index] += hash.population }
     c_gdp_per_c[index] = continent_gdp[index].to_f / continent_popu[index]
     #puts "#{continent} has a accumulated GDP per capita of: $#{c_gdp_per_c[index]}"
   end
