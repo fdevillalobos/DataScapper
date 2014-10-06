@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a1ca696-a5e8-4da0-a046-83aae5d57985" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/friend_tracker.rb" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/person.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.txt" afterPath="$PROJECT_DIR$/README.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/friend_tracker.rb" afterPath="$PROJECT_DIR$/friend_tracker.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.rb" afterPath="$PROJECT_DIR$/main.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/person.rb" afterPath="$PROJECT_DIR$/person.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="DataScrapper.iws" />
@@ -37,7 +37,7 @@
       <file leaf-file-name="country.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/country.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="33" selection-start="141" selection-end="172" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="705">
+            <state line="40" column="3" selection-start="1266" selection-end="1266" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="705">
               <folding />
             </state>
           </provider>
@@ -46,27 +46,18 @@
       <file leaf-file-name="main.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="325" column="0" selection-start="15506" selection-end="15740" vertical-scroll-proportion="1.1522347" vertical-offset="2325" max-vertical-offset="3405">
+            <state line="339" column="19" selection-start="15843" selection-end="15843" vertical-scroll-proportion="0.8472222" vertical-offset="0" max-vertical-offset="1080">
               <folding>
                 <element signature="e#245#1902#0" expanded="false" />
-                <element signature="e#9886#10572#0" expanded="false" />
-                <element signature="e#10611#11771#0" expanded="false" />
-                <element signature="e#11805#12185#0" expanded="false" />
-                <element signature="e#12207#12672#0" expanded="false" />
-                <element signature="e#12708#13144#0" expanded="false" />
-                <element signature="e#13250#13846#0" expanded="false" />
-                <element signature="e#13896#14310#0" expanded="false" />
-                <element signature="e#14371#15387#0" expanded="false" />
+                <element signature="e#1977#9701#0" expanded="false" />
+                <element signature="e#9989#10675#0" expanded="false" />
+                <element signature="e#10714#11874#0" expanded="false" />
+                <element signature="e#11908#12288#0" expanded="false" />
+                <element signature="e#12310#12775#0" expanded="false" />
+                <element signature="e#13353#13949#0" expanded="false" />
+                <element signature="e#13999#14413#0" expanded="false" />
+                <element signature="e#14474#15490#0" expanded="false" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="trash.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/trash.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="89" column="0" selection-start="3387" selection-end="3387" vertical-scroll-proportion="0.0" vertical-offset="405" max-vertical-offset="1935">
-              <folding />
             </state>
           </provider>
         </entry>
@@ -74,7 +65,7 @@
       <file leaf-file-name="person.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/person.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="19" column="3" selection-start="268" selection-end="268" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="375">
+            <state line="20" column="0" selection-start="269" selection-end="269" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="390">
               <folding />
             </state>
           </provider>
@@ -83,15 +74,8 @@
       <file leaf-file-name="friend_tracker.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/friend_tracker.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="5" selection-start="1662" selection-end="1662" vertical-scroll-proportion="0.0" vertical-offset="3" max-vertical-offset="1065">
-              <folding>
-                <element signature="e#95#392#0" expanded="false" />
-                <element signature="e#396#768#0" expanded="false" />
-                <element signature="e#772#977#0" expanded="false" />
-                <element signature="e#981#1339#0" expanded="false" />
-                <element signature="e#1666#2486#0" expanded="false" />
-                <element signature="e#2490#2695#0" expanded="false" />
-              </folding>
+            <state line="91" column="0" selection-start="3246" selection-end="3246" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1470">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -113,9 +97,9 @@
         <option value="$PROJECT_DIR$/ruby_transcript" />
         <option value="$PROJECT_DIR$/ruby_transcript.rb" />
         <option value="$PROJECT_DIR$/trash.rb" />
-        <option value="$PROJECT_DIR$/person.rb" />
-        <option value="$PROJECT_DIR$/friend_tracker.rb" />
         <option value="$PROJECT_DIR$/main.rb" />
+        <option value="$PROJECT_DIR$/friend_tracker.rb" />
+        <option value="$PROJECT_DIR$/person.rb" />
       </list>
     </option>
   </component>
@@ -391,10 +375,10 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="1920" height="1174" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32942238" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32851985" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32851985" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32942238" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24973376" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -467,54 +451,47 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/country.rb">
+    <entry file="file://$PROJECT_DIR$/trash.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="33" selection-start="141" selection-end="172" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="705">
+        <state line="89" column="0" selection-start="3387" selection-end="3387" vertical-scroll-proportion="0.8611111" vertical-offset="405" max-vertical-offset="1935">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trash.rb">
+    <entry file="file://$PROJECT_DIR$/country.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="89" column="0" selection-start="3387" selection-end="3387" vertical-scroll-proportion="0.0" vertical-offset="405" max-vertical-offset="1935">
+        <state line="40" column="3" selection-start="1266" selection-end="1266" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="705">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/person.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="3" selection-start="268" selection-end="268" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="375">
+        <state line="20" column="0" selection-start="269" selection-end="269" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="390">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/friend_tracker.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="5" selection-start="1662" selection-end="1662" vertical-scroll-proportion="0.0" vertical-offset="3" max-vertical-offset="1065">
-          <folding>
-            <element signature="e#95#392#0" expanded="false" />
-            <element signature="e#396#768#0" expanded="false" />
-            <element signature="e#772#977#0" expanded="false" />
-            <element signature="e#981#1339#0" expanded="false" />
-            <element signature="e#1666#2486#0" expanded="false" />
-            <element signature="e#2490#2695#0" expanded="false" />
-          </folding>
+        <state line="91" column="0" selection-start="3246" selection-end="3246" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1470">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="325" column="0" selection-start="15506" selection-end="15740" vertical-scroll-proportion="1.1522347" vertical-offset="2325" max-vertical-offset="3405">
+        <state line="339" column="19" selection-start="15843" selection-end="15843" vertical-scroll-proportion="0.8472222" vertical-offset="0" max-vertical-offset="1080">
           <folding>
             <element signature="e#245#1902#0" expanded="false" />
-            <element signature="e#9886#10572#0" expanded="false" />
-            <element signature="e#10611#11771#0" expanded="false" />
-            <element signature="e#11805#12185#0" expanded="false" />
-            <element signature="e#12207#12672#0" expanded="false" />
-            <element signature="e#12708#13144#0" expanded="false" />
-            <element signature="e#13250#13846#0" expanded="false" />
-            <element signature="e#13896#14310#0" expanded="false" />
-            <element signature="e#14371#15387#0" expanded="false" />
+            <element signature="e#1977#9701#0" expanded="false" />
+            <element signature="e#9989#10675#0" expanded="false" />
+            <element signature="e#10714#11874#0" expanded="false" />
+            <element signature="e#11908#12288#0" expanded="false" />
+            <element signature="e#12310#12775#0" expanded="false" />
+            <element signature="e#13353#13949#0" expanded="false" />
+            <element signature="e#13999#14413#0" expanded="false" />
+            <element signature="e#14474#15490#0" expanded="false" />
           </folding>
         </state>
       </provider>

@@ -72,7 +72,8 @@ class FRIENDTRACKER
     #	This method takes a hashmap and returns the key having the greatest value
     #	@param list the hashmap to search through
     #	@return the string that has the greatest value
-
+    hola = list.sort_by { |key, hash| hash }.last(1).reverse[0]
+    hola[0]
   end
 
 end
@@ -89,26 +90,3 @@ class FRIENDPROGRAM
   end
 
 end
-
-
-
-#/**
-
-#	 */
-#private String getMax(HashMap<String, Integer> list) {
-#  Set<String> k = list.keySet();
-#
-#  Integer maxCount = new Integer(-1);
-#  String maxName = null;
-#
-#  for(Object o : k) {
-#      Integer count = list.get(o);
-#  if (count > maxCount) {
-#      maxCount = count;
-#  maxName = o.toString();
-#  }
-#  }
-#  return maxName;
-#  }
-
-

@@ -40,15 +40,16 @@ def vlook_information(names, country)
 
     # Get continent of the country
     country[ctry_name].continent = country[ctry_name].HTML.css('div#CollapsiblePanel1_Geo td#data div.category_data a').text
-    country[ctry_name].continent = case country[ctry_name].continent
-      when 'Middle East'
-        'Asia'
-      when 'Central America and the Caribbean'
-        'Central America'
-      when 'Southeast Asia'
-        'Asia'
-      else
-        country[ctry_name].continent
+    country[ctry_name].continent =
+        case country[ctry_name].continent
+        when 'Middle East'
+          'Asia'
+        when 'Central America and the Caribbean'
+          'Central America'
+        when 'Southeast Asia'
+          'Asia'
+        else
+          country[ctry_name].continent
     end
     country['World'].continent = ' '
     country['European Union'].continent = ' '
@@ -61,16 +62,17 @@ def vlook_information(names, country)
     if elevations.text =~ (/lowest point:.*\d{1,2},\d{1,3} m|lowest point:.*\d{1,3} m/)
       low_e = elevations.text[/lowest point:.*\d{1,2},\d{1,3} m|lowest point:.*\d{1,3} m/, 0][/-*\d{1,2},\d{1,3}|-*\d{1,3}/, 0]       # This notation replaces .match and never gives and error, just nil.
       low_e = low_e.split(',')
-      country[ctry_name].low_elev = case low_e.size
-      when 1
-        low_e[0].to_i
-      when 2
-        if low_e[0].to_i < 0
-          low_e[0].to_i * 1000 - low_e[1].to_i
-        else
-          low_e[0].to_i * 1000 + low_e[1].to_i
-        end
-      end
+      country[ctry_name].low_elev =
+          case low_e.size
+          when 1
+            low_e[0].to_i
+          when 2
+            if low_e[0].to_i < 0
+              low_e[0].to_i * 1000 - low_e[1].to_i
+            else
+              low_e[0].to_i * 1000 + low_e[1].to_i
+            end
+          end
     end
 
     # Retrieve Elevation Info - Highest Point
@@ -78,16 +80,17 @@ def vlook_information(names, country)
     if elevations.text =~ (/highest point:\n*\t*\n*\t*.*\d{1,2},\d{1,3} m|highest point:\n*\t*\n*\t*.*\d{1,3} m/)
       high_e = elevations.text[/highest point:\n*\t*\n*\t*.*\d{1,2},\d{1,3} m|highest point:\n*\t*\n*\t*.*\d{1,3} m/, 0][/-*\d{1,2},\d{1,3}|-*\d{1,3}/, 0]
       high_e = high_e.split(',')
-      country[ctry_name].high_elev = case high_e.size
-      when 1
-        high_e[0].to_i
-      when 2
-        if high_e[0].to_i < 0
-          high_e[0].to_i * 1000 - high_e[1].to_i
-        else
-          high_e[0].to_i * 1000 + high_e[1].to_i
-        end
-      end
+      country[ctry_name].high_elev =
+          case high_e.size
+          when 1
+            high_e[0].to_i
+          when 2
+            if high_e[0].to_i < 0
+              high_e[0].to_i * 1000 - high_e[1].to_i
+            else
+              high_e[0].to_i * 1000 + high_e[1].to_i
+            end
+          end
     end
 
     # Search For Political Parties - NON-GREEDY
@@ -104,24 +107,24 @@ def vlook_information(names, country)
       end
     end
     country[ctry_name].p_party_num = count
-    #puts "#{country[ctry_name].name} has #{country[ctry_name].p_party_num} political parties"
 
     # Get the population of the country
     population_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_People').inner_html[/title="Notes and Definitions: Population".*?<span/m, 0]
     if population_html && population_html =~ (/\d{0,3},*\d{0,3},*\d{0,3},*\d{3}/)
       population = population_html[/\d{0,3},*\d{0,3},*\d{0,3},*\d{3}/, 0].split(',')
-      country[ctry_name].population = case population.size
-        when 1
-          population[0].to_i
-        when 2
-          (population[0] << population[1]).to_i
-        when 3
-          (population[0] << population[1] << population[2]).to_i
-        when 4
-          (population[0] << population[1] << population[2] << population[3]).to_i
-      else
-        0
-      end
+      country[ctry_name].population =
+          case population.size
+          when 1
+            population[0].to_i
+          when 2
+            (population[0] << population[1]).to_i
+          when 3
+            (population[0] << population[1] << population[2]).to_i
+          when 4
+            (population[0] << population[1] << population[2] << population[3]).to_i
+          else
+            0
+          end
     else
       country[ctry_name].population = 0
     end
@@ -130,21 +133,22 @@ def vlook_information(names, country)
     e_consumption_html = country[ctry_name].HTML.css('div#CollapsiblePanel1_Energy').inner_html[/title="Notes and Definitions: Electricity - consumption".*?(<span)/m, 0]
     if e_consumption_html
       e_consumption = e_consumption_html[/\d{1,3}.\d{0,3} (billion|trillion|kWh|million)/, 0].split(' ')
-      country[ctry_name].elec_consumption = case e_consumption[1]
-        when 'kWh'
-          e_consumption[0].to_i
-        when 'million'
-          number = e_consumption[0].split('.')
-          number[0].to_i * 1_000_000 + number[1].to_i * 1_000
-        when 'billion'
-          number = e_consumption[0].split('.')
-          number[0].to_i * 1_000_000_000 + number[1].to_i * 1_000_000
-        when 'trillion'
-          number = e_consumption[0].split('.')
-          number[0].to_i * 1_000_000_000_000 + number[1].to_i * 1_000_000_000
-      else
-        0
-      end
+      country[ctry_name].elec_consumption =
+          case e_consumption[1]
+          when 'kWh'
+            e_consumption[0].to_i
+          when 'million'
+            number = e_consumption[0].split('.')
+            number[0].to_i * 1_000_000 + number[1].to_i * 1_000
+          when 'billion'
+            number = e_consumption[0].split('.')
+            number[0].to_i * 1_000_000_000 + number[1].to_i * 1_000_000
+          when 'trillion'
+            number = e_consumption[0].split('.')
+            number[0].to_i * 1_000_000_000_000 + number[1].to_i * 1_000_000_000
+          else
+            0
+          end
     else
       country[ctry_name].elec_consumption = 0
     end
